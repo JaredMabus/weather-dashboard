@@ -18,8 +18,8 @@
       <h2>Weather Dashboard</h2>
     </header>
     <div id="page-layout" class="container-fluid">
-      <div class="row">
-        <div id="search-container" class="col-3">
+      <div class="row d-flex flex-column flex-sm-column flex-md-row">
+        <div id="search-container" class="col-12 col-md-3">
           <form id="search-form">
             <div class="form-group">
               <label for="search-input">Search for a City</label>
@@ -41,8 +41,8 @@
           </form>
           <div id="history-list" class="list-group"></div>
         </div>
-        <div id="weather-container" class="col-9">
-          <div class="col-8"><h2>Todays</h2></div>
+        <div id="weather-container" class="col-12 col-md-9">
+          <div id="today-weather" class="col-12 col-md-9"></div>
           <h3>5-day Forecast</h3>
           <div id="five-day-forecast"></div>
         </div>

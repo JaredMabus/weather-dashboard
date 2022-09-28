@@ -18,6 +18,8 @@ header {
 }
 
 #search-form {
+  min-width: 200px;
+  max-width: 600px;
   padding: 1rem;
   margin: 1rem 0rem;
   border-bottom: 1px solid lightgrey;
@@ -49,4 +51,26 @@ header {
 .card img {
   max-height: 65px;
   max-width: 65px;
+}
+
+#today-weather {
+  border: 3px solid grey;
+  padding: 1rem;
+  margin: 0.5rem;
+  min-height: 127px;
+}
+
+.city-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: baseline;
+  flex-wrap: "wrap";
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.city-container img {
+  max-height: 40px;
+  max-width: 40px;
 }
