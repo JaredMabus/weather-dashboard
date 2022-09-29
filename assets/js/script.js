@@ -4,7 +4,7 @@ const searchContainer = $("#search-container");
 const weatherContainer = $("#weather-container");
 const fiveDayForecastEl = $("#five-day-forecast");
 const todayWeatherEl = $("#today-weather");
-// Search
+// Search history elements
 const searchForm = $("#search-form");
 const searchInputEl = $("#search-input");
 const searchHistoryList = $("#history-list");
@@ -21,7 +21,13 @@ const getWeatherForecast = (city) => {
   const requestUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
   fetch(requestUrl)
     .then((response) => {
-      return response.json();
+      // Error if response greater than 400
+      if(response.status >= 400){
+        $(".input-error").length <= 0 ? $('#search-input').after("<span class='input-error'>No results for search value</span>") : "";
+      } else {
+        $(".input-error").length > 0 ? $(".input-error").remove() : "";
+        return response.json();
+      }
     })
     .then((data) => {
       const { city } = data;
@@ -37,10 +43,9 @@ const getWeatherForecast = (city) => {
     });
 };
 
-// API Lat and Lon
+// Weather forecast API Lat and Lon
 const forecastLatLonApi = (lat, lon) => {
   const requestUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
-  console.log(lat, lon);
   return fetch(requestUrl)
     .then((response) => {
       return response.json();
@@ -74,6 +79,7 @@ const forecastLatLonApi = (lat, lon) => {
     .then(() => {
       renderTodayWeather();
       renderForecast();
+      
     })
     .catch((err) => {
       console.log(err);
@@ -81,46 +87,29 @@ const forecastLatLonApi = (lat, lon) => {
 };
 
 // Render Element
-const renderElement = (tag, content, appendTo) => {
+const renderElement = (tag, content = null, appendTo, attr = null) => {
   const elem = $(tag);
-  elem.text(content);
-  $(appendTo).append(elem);
+  attr != null ? elem.attr(attr[0], attr[1]) : "";
+  content != null ? elem.text(content) : "";
+  appendTo.append(elem);
 };
 
 // Render 5-day forecast card
 const renderForecast = () => {
-  console.log(weatherDays);
   fiveDayForecastEl.html("");
 
   weatherDays.forEach((day) => {
     const { dt, main, wind } = day;
     const weatherIcon = day.weather[0].icon;
-    // Create Elements
     const dayCard = $("<div class='card'>");
     const dayCardBody = $("<div class='card-body'>");
-    const dateEl = $("<h4 class='card-title'>");
-    const tempEl = $("<p class='card-text'>");
-    const windEl = $("<p class='card-text'>");
-    const humidityEl = $("<p class='card-text'>");
-    const weatherIconEl = $("<img class='card-text'>");
-    weatherIconEl.attr(
-      "src",
-      `http://openweathermap.org/img/wn/${weatherIcon}@2x.png`
-    );
-
-    dateEl.text(moment.unix(dt).format("M/D/YYYY"));
-    tempEl.text(`Temp: ${main.temp} (\u00B0F)`);
-    windEl.text(`Wind: ${wind.speed} MPH`);
-    humidityEl.text(`Humidity: ${main.humidity}%`);
-
-    // Append Elements
     fiveDayForecastEl.append(dayCard);
     dayCard.append(dayCardBody);
-    dayCardBody.append(dateEl);
-    dayCardBody.append(weatherIconEl);
-    dayCardBody.append(tempEl);
-    dayCardBody.append(windEl);
-    dayCardBody.append(humidityEl);
+    renderElement("<h4 class='card-title'>", moment.unix(dt).format("M/D/YYYY"), dayCardBody );
+    renderElement("<img class='card-text'>", null, dayCardBody, ["src",`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`]);                              
+    renderElement("<p class='card-text'>", `Temp: ${main.temp} (\u00B0F)`, dayCardBody );      
+    renderElement("<p class='card-text'>", `Wind: ${wind.speed} MPH`, dayCardBody );           
+    renderElement("<p class='card-text'>", `Humidity: ${main.humidity}%`, dayCardBody );       
   });
 };
 
@@ -165,7 +154,7 @@ const renderTodayWeather = () => {
 // Render search history
 const renderSearchHisotry = () => {
   searchHistoryList.html("");
-  searchHistory.forEach((item, i) => {
+  searchHistory.forEach((item) => {
     searchHistoryList.append(
       $("<button>")
         .addClass("list-group-item list-group-item-action")
@@ -207,6 +196,14 @@ const getLocalStorage = () => {
   }
 };
 
+// Clear search history
+const clearHistory = () => {
+  searchHistoryList.html("");
+  searchHistory.length = 0;
+  localStorage.removeItem('searchHistory');
+  
+}
+
 // Run init at start
 const init = function () {
   getLocalStorage();
@@ -221,15 +218,15 @@ searchForm.on("submit", (e) => {
   const searchInput = searchInputEl.val();
   if (searchInput && searchInput !== null) {
     getWeatherForecast(searchInput);
-  } else {
-    console.log("Empty search field");
-  }
+  } 
 });
 
 // Add event listener on search container to run another query
 searchContainer.on("click", "#history-item", function () {
-  console.log($(this).val());
   const lat = $(this).attr("data-lat");
   const lon = $(this).attr("data-lon");
   forecastLatLonApi(lat, lon);
 });
+
+// Event listener for remove history
+$("#clear-history-btn").on('click', clearHistory); 

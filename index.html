@@ -29,6 +29,7 @@
                 id="search-input"
                 aria-describedby="textHelp"
                 placeholder="City Name"
+                required="true"
               />
             </div>
             <button
@@ -38,7 +39,15 @@
             >
               Search
             </button>
+            <button
+              id="clear-history-btn"
+              type="button"
+              class="btn-block btn btn-secondary"
+            >
+              Clear History
+            </button>
           </form>
+          
           <div id="history-list" class="list-group"></div>
         </div>
         <div id="weather-container" class="col-12 col-md-9">

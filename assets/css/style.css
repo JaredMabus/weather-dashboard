@@ -17,9 +17,24 @@ header {
   padding: 0.5rem;
 }
 
+
+.input-error {
+  color: red;
+  font-size: .9rem; 
+}
+
+#history-list .list-group-item {
+  display: flex;
+  flex-direction: center;
+  justify-content: center;
+  margin: .3rem;
+  border: 1px solid lightgrey;  
+
+}
+
 #search-form {
   min-width: 200px;
-  max-width: 600px;
+  /* max-width: 600px; */
   padding: 1rem;
   margin: 1rem 0rem;
   border-bottom: 1px solid lightgrey;
@@ -59,6 +74,17 @@ header {
   margin: 0.5rem;
   min-height: 127px;
 }
+
+#clear-history-btn {
+  margin-bottom: 1rem; 
+  max-width: 50%; 
+  align-self: center;
+  justify-self: center;
+  text-align: center; 
+  margin: 0 auto;
+  margin-top: .2rem;  
+}
+
 
 .city-container {
   display: flex;
